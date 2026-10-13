@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/assets/img-e02cd94544.png">
+  <title>Natus - Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --natus-blue:#087fb3;
+      --natus-blue-dark:#07598d;
+      --natus-cyan:#10aeb8;
+      --natus-soft:#eef8fc;
+      --natus-border:#cfe6f2;
+      --natus-text:#123f69;
+      --natus-muted:#6c8398;
+      --natus-shadow:0 6px 20px rgba(15,76,105,.08);
+    }
+    *{box-sizing:border-box}
+    body{background:#f7fbfd;color:var(--natus-text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;}
+    .natus-header{height:86px;background:linear-gradient(100deg,#0b7fae 0%,#0875a8 58%,#0b689d 100%);color:#fff;box-shadow:0 4px 14px rgba(8,93,135,.18);}
+    .natus-header .brand-logo{width:58px;height:58px;object-fit:cover;border-radius:14px;background:#fff1;padding:2px;}
+    .natus-header .brand-title{font-size:1.8rem;line-height:1;font-weight:700;letter-spacing:-.02em;}
+    .natus-header .brand-subtitle{font-size:1.15rem;font-weight:500;opacity:.95;}
+    .natus-header .header-select{background:transparent;color:#fff;border:0;border-bottom:1px solid rgba(255,255,255,.35);font-weight:600;outline:0;min-width:135px;}
+    .natus-header .header-select option{color:#123f69;background:#fff;}
+    .content-wrap{max-width:1500px;margin:0 auto;padding:20px 22px 40px;}
+    .filter-bar{background:#fff;border:1px solid var(--natus-border);border-radius:14px;padding:12px 16px;box-shadow:var(--natus-shadow);}
+    .filter-bar .form-label{color:var(--natus-muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.03em;}
+    .filter-bar .form-select{border-color:#b9d7e8;border-radius:9px;color:var(--natus-text);font-weight:600;}
+    .dashboard-tabs{border-bottom:1px solid #d9e8f0;margin-top:16px;margin-bottom:18px;}
+    .dashboard-tabs .nav-link{border:0;border-bottom:3px solid transparent;border-radius:0;color:#49627a;font-weight:600;padding:12px 18px;background:transparent;}
+    .dashboard-tabs .nav-link.active{color:#0874a8;background:transparent;border-bottom-color:#0aa0c5;}
+    .dashboard-section{background:#fff;border:1px solid var(--natus-border);border-radius:16px;padding:18px;box-shadow:var(--natus-shadow);}
+    .section-title{color:#0a4e82;font-weight:700;}
+    .kpi-card{border-radius:13px;border:1px solid var(--natus-border);background:#fff;box-shadow:0 3px 12px rgba(14,74,102,.05);overflow:hidden;position:relative;}
+    .kpi-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent,#0b84b4);}
+    .kpi-card .kpi-icon{width:40px;height:40px;border-radius:11px;background:var(--natus-soft);display:flex;align-items:center;justify-content:center;color:var(--natus-blue);font-size:1.2rem;}
+    .kpi-card .kpi-label{font-size:.73rem;color:#6c8294;text-transform:uppercase;font-weight:700;letter-spacing:.025em;}
+    .kpi-card .kpi-value{font-size:2rem;line-height:1.05;color:#07578e;font-weight:750;}
+    .kpi-card .kpi-sub{color:#71889a;font-size:.78rem;}
+    .metric-strip{background:linear-gradient(135deg,#f2fbfe,#eaf7fb);border:1px solid var(--natus-border);border-radius:13px;}
+    .metric-strip .metric-value{color:#075b91;font-size:1.35rem;font-weight:750;}
+    .chart-box{background:#fff;border:1px solid var(--natus-border);border-radius:14px;padding:16px;box-shadow:var(--natus-shadow);}
+    .chart-box h6{color:#174f79;font-weight:700;}
+    .quality-hero{background:linear-gradient(135deg,#f0fbfe 0%,#eaf7fc 100%);border:1px solid var(--natus-border);border-radius:15px;padding:18px;}
+    .quality-hero .hero-title{color:#075f95;font-weight:750;font-size:1.15rem;}
+    .ppe-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+    .ppe-card{background:#fff;border:1px solid #cfe4ef;border-radius:12px;padding:18px;text-align:center;}
+    .ppe-card .ppe-icon{font-size:2rem;color:#087fb3;}
+    .ppe-card .ppe-label{font-weight:700;color:#124d78;}
+    .ppe-card .ppe-value{font-size:2.05rem;font-weight:800;color:#0875a8;line-height:1.1;margin-top:8px;}
+    .ppe-card .ppe-sub{font-size:.78rem;color:#567087;}
+    .progress-natus{height:10px;background:#dfeaf0;border-radius:99px;overflow:hidden;margin-top:12px;}
+    .progress-natus>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#0db1b7,#087fb3);}
+    .quality-info{background:#eaf5fb;border:1px solid #d6eaf3;border-radius:10px;color:#2e607f;font-size:.8rem;padding:11px 13px;margin-top:12px;}
+    .quality-list-title{color:#124e7a;font-weight:750;font-size:1.15rem;margin:22px 0 10px;}
+    .quality-row{background:#fff;border:1px solid var(--natus-border);border-radius:11px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;box-shadow:0 2px 7px rgba(14,74,102,.035);}
+    .quality-row .q-icon{width:36px;height:36px;border-radius:50%;background:#e9f7fc;color:#087fb3;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+    .quality-row .q-name{font-weight:600;color:#184f78;}
+    .quality-row .q-value{font-weight:800;color:#123f69;}
+    .quality-row .q-arrow{color:#7b95a8;font-size:1.1rem;}
+    .loading-overlay{background:rgba(247,251,253,.92);}
+    .text-natus{color:#0875a8!important}
+    @media (max-width:900px){.natus-header .brand-title{font-size:1.35rem}.natus-header .brand-subtitle{font-size:.9rem}.ppe-grid{grid-template-columns:1fr}.content-wrap{padding:14px 10px 30px}}
+  </style>
+  <script src="/natus-rpc.js"></script>
+</head>
+<body class="bg-light">
+  <nav class="natus-header d-flex align-items-center">
+    <div class="container-fluid px-4 d-flex align-items-center justify-content-between gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <img src="/assets/img-be08707093.png" class="brand-logo" alt="Natus">
+        <div><div class="brand-title">Natus <span class="brand-subtitle">- <span id="tituloDashboard">Visão Geral</span></span></div></div>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-hospital"></i>
+          <select id="headerSetor" class="header-select" onchange="trocarSetor(this.value)" aria-label="Setor"></select>
+        </div>
+        <button class="btn btn-sm text-white border border-white border-opacity-50 rounded-circle" onclick="voltarPainel()" title="Voltar ao Painel Operacional"><i class="bi bi-person-circle fs-5"></i></button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content-wrap">
+    <div class="filter-bar d-flex align-items-end justify-content-between gap-3 flex-wrap mb-1">
+      <div class="d-flex align-items-end gap-2 flex-wrap">
+        <div>
+          <label class="form-label mb-1">Mês</label>
+          <select id="filtroMes" class="form-select form-select-sm" onchange="atualizarDash()"></select>
+        </div>
+        <div>
+          <label class="form-label mb-1">Ano</label>
+          <select id="filtroAno" class="form-select form-select-sm" onchange="atualizarDash()"></select>
+        </div>
+        <div class="d-none">
+          <label class="form-label mb-1">Setor</label>
+          <select id="filtroSetor" class="form-select form-select-sm" onchange="trocarSetor(this.value)"></select>
+        </div>
+      </div>
+      <div class="small text-muted"><i class="bi bi-calendar3 me-1"></i>Período selecionado</div>
+    </div>
+
+    <ul class="nav dashboard-tabs" id="abasDashboard">
+      <li class="nav-item">
+        <button type="button" class="nav-link active" id="abaBtnVisaoGeral" onclick="alternarAba('visaoGeral')">
+          <i class="bi bi-bar-chart-line-fill me-1"></i> Visão Geral
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" id="abaBtnQualidade" onclick="alternarAba('qualidade')">
+          <i class="bi bi-heart-pulse-fill me-1"></i> Indicadores de Qualidade
+        </button>
+      </li>
+      <li class="nav-item ms-auto">
+        <button type="button" class="nav-link" id="abaBtnRelatorios" onclick="abrirRelatorioDashboard()">
+          <i class="bi bi-file-earmark-bar-graph me-1"></i> Relatórios
+        </button>
+      </li>
+    </ul>
+
+    <div id="painelVisaoGeral" class="dashboard-section">
+      <div class="d-flex align-items-center justify-content-between mb-3"><h5 class="section-title mb-0"><i class="bi bi-bar-chart-line-fill me-2"></i>Visão Geral</h5><span class="small text-muted">Indicadores do período selecionado</span></div>
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="kpi-card p-3 h-100" style="--accent:#087fb3;">
+          <div class="d-flex align-items-start justify-content-between"><div><div class="kpi-label" id="kpiTaxaLabel">Taxa de Ocupação Hospitalar (%) Mensal</div><div class="kpi-value mt-2" id="kpiTaxa">0%</div></div><div class="kpi-icon"><i class="bi bi-hospital"></i></div></div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="kpi-card p-3 h-100" style="--accent:#10aeb8;">
+          <div class="d-flex align-items-start justify-content-between"><div><div class="kpi-label">Média Pacientes/DIA</div><div class="kpi-value mt-2" id="kpiMediaPacientes">0</div></div><div class="kpi-icon"><i class="bi bi-person-fill"></i></div></div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="kpi-card p-3 h-100" style="--accent:#dc5364;">
+          <div class="d-flex align-items-start justify-content-between"><div><div class="kpi-label">Mortalidade / Óbitos no mês</div><div class="kpi-value mt-2" id="kpiMortalidade">0%</div><div class="kpi-sub mt-1">Óbitos: <strong id="kpiObitosMes">0</strong></div><div class="kpi-sub" id="kpiMortalidadeNota"></div></div><div class="kpi-icon"><i class="bi bi-heart-pulse-fill"></i></div></div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="kpi-card p-3 h-100" style="--accent:#1d77a9;">
+          <div class="kpi-label">Pacientes Admitidos por Faixa de Peso</div><div id="pesoFaixasContainer" class="mt-2"></div>
+        </div>
+      </div>
+      <div class="col-md-3 d-none" id="blocoRNsInternadosMes">
+        <div class="kpi-card p-3 h-100" style="--accent:#10aeb8;">
+          <div class="d-flex align-items-start justify-content-between">
+            <div><div class="kpi-label">RNs Internados no Mês</div><div class="kpi-value mt-2" id="kpiRNsInternadosMes">0</div><div class="kpi-sub mt-1">Somente RN internado sozinho</div></div>
+            <div class="kpi-icon"><i class="bi bi-person-heart"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-4"><div class="metric-strip p-3 h-100"><div class="small text-uppercase fw-bold text-muted">Internações No Mês</div><div class="d-flex justify-content-between mt-2"><span>Internas</span><span class="metric-value" id="admissoesInternasMes">0</span></div><div class="d-flex justify-content-between"><span>Externas</span><span class="metric-value" id="admissoesExternasMes">0</span></div><div class="d-flex justify-content-between border-top mt-2 pt-2"><strong>Total</strong><strong class="metric-value" id="admissoesTotalGeral">0</strong></div></div></div>
+      <div class="col-md-4"><div class="metric-strip p-3 h-100"><div class="small text-uppercase fw-bold text-muted">Altas no Mês</div><div class="d-flex justify-content-between mt-2"><span>Capital / Manaus</span><span class="metric-value" id="altasDomiciliar">0</span></div><div class="d-flex justify-content-between"><span>Outro Município</span><span class="metric-value" id="altasMunicipio">0</span></div><div class="d-flex justify-content-between border-top mt-2 pt-2"><strong>Total</strong><strong class="metric-value" id="altasTotalGeral">0</strong></div></div></div>
+      <div class="col-md-4"><div class="metric-strip p-3 h-100"><div class="small text-uppercase fw-bold text-muted">Transferências no Mês</div><div class="d-flex justify-content-between mt-2"><span>Internas</span><span class="metric-value" id="transfInternasMes">0</span></div><div class="d-flex justify-content-between"><span>Externas</span><span class="metric-value" id="transfExternasMes">0</span></div><div class="d-flex justify-content-between border-top mt-2 pt-2"><strong>Total</strong><strong class="metric-value" id="transfTotalGeral">0</strong></div></div></div>
+    </div>
+    <div class="row g-3 mb-4">
+      <div class="col-md-3 d-none" id="cardEvasoesMes">
+        <div class="metric-strip p-3 h-100">
+          <div class="small text-uppercase fw-bold text-muted">EVASÕES</div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span>Evasões no Mês</span><strong class="metric-value text-danger" id="evasoesMes">0</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card exclusivo da UCINCA: adequação de peso nas Altas -->
+    <div class="row g-3 mb-4 d-none" id="blocoAltasPesoUcinca">
+      <div class="col-12">
+        <div class="chart-box">
+          <h6 class="fw-bold text-secondary mb-3">
+            <i class="bi bi-clipboard2-pulse-fill me-2"></i>Adequação de Peso nas Altas — UCINCA
+          </h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="border rounded p-3 h-100">
+                <div class="small text-muted fw-semibold mb-2"><i class="bi bi-house-door-fill me-1"></i>Alta Domiciliar (Capital) — mín. <span id="limiarDomiciliar">1.600</span>g</div>
+                <div class="d-flex justify-content-between small"><span>Abaixo do peso ideal</span><strong class="text-danger" id="domAbaixo">0</strong></div>
+                <div class="d-flex justify-content-between small"><span>Peso ideal</span><strong class="text-success" id="domIdeal">0</strong></div>
+                <div class="d-flex justify-content-between small"><span>Alta tardia (muito além)</span><strong class="text-warning" id="domTardia">0</strong></div>
+                <div class="d-flex justify-content-between small text-muted"><span>Não informado</span><strong id="domNaoInformado">0</strong></div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="border rounded p-3 h-100">
+                <div class="small text-muted fw-semibold mb-2"><i class="bi bi-signpost-split-fill me-1"></i>Alta Outro Município — mín. <span id="limiarMunicipio">2.500</span>g</div>
+                <div class="d-flex justify-content-between small"><span>Abaixo do peso ideal</span><strong class="text-danger" id="munAbaixo">0</strong></div>
+                <div class="d-flex justify-content-between small"><span>Peso ideal</span><strong class="text-success" id="munIdeal">0</strong></div>
+                <div class="d-flex justify-content-between small"><span>Alta tardia (muito além)</span><strong class="text-warning" id="munTardia">0</strong></div>
+                <div class="d-flex justify-content-between small text-muted"><span>Não informado</span><strong id="munNaoInformado">0</strong></div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="border rounded p-3 h-100 bg-light">
+                <div class="small text-muted fw-semibold mb-2"><i class="bi bi-collection-fill me-1"></i>Total Geral (ambos os destinos)</div>
+                <div class="d-flex justify-content-between small"><span>Abaixo do peso ideal</span><strong class="text-danger" id="totAbaixo">0</strong></div>
+                <div class="d-flex justify-content-between small"><span>Peso ideal</span><strong class="text-success" id="totIdeal">0</strong></div>
+                <div class="d-flex justify-content-between small"><span>Alta tardia (muito além)</span><strong class="text-warning" id="totTardia">0</strong></div>
+                <div class="d-flex justify-content-between small text-muted"><span>Não informado</span><strong id="totNaoInformado">0</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-text mt-2">
+            "Alta tardia" considera saídas com peso acima de <span id="margemTardia">500</span>g além do peso mínimo de referência do destino.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-8">
+        <div class="chart-box">
+          <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-graph-up me-2"></i><span id="tituloChartOcupacao">Evolução da Ocupação Diária</span></h6>
+          <canvas id="chartOcupacao" height="100"></canvas>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="chart-box">
+          <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-pie-chart-fill me-2"></i>Distribuição por Procedência</h6>
+          <canvas id="chartProcedencia" height="210"></canvas>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="chart-box">
+          <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-bar-chart-steps me-2"></i>Média de Permanência por Faixa (Dias)</h6>
+          <canvas id="chartFaixas" height="120"></canvas>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="chart-box">
+          <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-trophy-fill me-2"></i>Rotatividade / Giro por Leito</h6>
+          <canvas id="chartGiros" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div id="painelQualidade" class="d-none dashboard-section">
+      <div class="quality-hero mb-3">
+        <div class="d-flex align-items-center gap-2"><i class="bi bi-heart-pulse-fill fs-4 text-natus"></i><div class="hero-title">Contato Pele a Pele</div></div>
+        <div class="ppe-grid">
+          <div class="ppe-card"><div class="ppe-icon"><i class="bi bi-person-hearts"></i></div><div class="ppe-label mt-2">1º Dia de Vida</div><div class="ppe-value" id="qPele1DiaPct">0%</div><div class="ppe-sub" id="qPele1DiaSub">0 de 0 RNs internados</div><div class="progress-natus"><span id="qPele1DiaBar" style="width:0%"></span></div></div>
+          <div class="ppe-card"><div class="ppe-icon"><i class="bi bi-person-hearts"></i></div><div class="ppe-label mt-2">2º ao 4º Dia de Vida</div><div class="ppe-value" id="qPele2a4Pct">0%</div><div class="ppe-sub" id="qPele2a4Sub">0 de 0 RNs internados</div><div class="progress-natus"><span id="qPele2a4Bar" style="width:0%"></span></div></div>
+        </div>
+        <div class="quality-info"><i class="bi bi-info-circle-fill me-2"></i>O contato pele a pele é lançado diariamente. O sistema usa o primeiro contato realizado para classificar 1º Dia ou 2º ao 4º Dia de Vida no indicador mensal.</div>
+      </div>
+
+      <div class="quality-list-title">Demais Indicadores de Qualidade</div>
+      <div class="quality-row"><div class="d-flex align-items-center gap-3"><div class="q-icon"><i class="bi bi-person-heart"></i></div><div class="q-name">Extração de Leite à Beira-Leito</div></div><div class="d-flex align-items-center gap-3"><span class="q-value" id="qExtracaoPct">0%</span><span class="q-arrow">›</span></div></div>
+      <div class="quality-row"><div class="d-flex align-items-center gap-3"><div class="q-icon"><i class="bi bi-droplet-fill"></i></div><div class="q-name">Aleitamento Exclusivo na Alta</div></div><div class="d-flex align-items-center gap-3"><span class="q-value" id="qAleitamentoPct">0%</span><span class="q-arrow">›</span></div></div>
+      <div class="quality-row"><div class="d-flex align-items-center gap-3"><div class="q-icon"><i class="bi bi-people-fill"></i></div><div class="q-name">Visitação Familiar</div></div><div class="d-flex align-items-center gap-3"><span class="q-value" id="qVisitacaoResumo">—</span><span class="q-arrow">›</span></div></div>
+      <div class="small text-muted ms-1 mb-3"><span id="qExtracaoSub">0 de 0 registros</span> · <span id="qAleitamentoSub">0 de 0 altas</span></div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-7" id="colVisitacao"><div class="chart-box"><h6 class="mb-3"><i class="bi bi-people-fill me-2"></i>Detalhamento da Visitação Familiar</h6><canvas id="chartVisitacao" height="140"></canvas></div></div>
+        <div class="col-md-5 d-none" id="colEtapaCanguru"><div class="chart-box"><h6 class="mb-3"><i class="bi bi-diagram-3-fill me-2"></i>Etapa do Método Canguru — UCINCA</h6><canvas id="chartEtapaCanguru" height="140"></canvas></div></div>
+      </div>
+
+      <div class="form-text mb-2">Indicadores calculados sobre os lançamentos diários de "Indicadores de Qualidade" feitos no card do leito e sobre os dados complementares registrados na Alta, dentro do mês/setor filtrados acima.</div>
+    </div>  </div>
+
+  <script>
+    const token = "<?!= token ?>";
+    const appUrl = "<?!= appUrl ?>";
+    let setorAtual = "<?!= setorParam ?>";
+    const ROTULO_SETOR = { 'UEN': 'Leito Extra CCO Neonatal' };
+    function rotuloSetor(valor) { return ROTULO_SETOR[String(valor || '').trim().toUpperCase()] || String(valor || ''); }
+
+    let chartOcup = null;
+    let chartProc = null;
+    let chartFaix = null;
+    let chartGiro = null;
+    let chartVisitacao = null;
+    let chartEtapaCanguru = null;
+    let abaAtual = 'visaoGeral';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('headerSetor').value = setorAtual;
+      preencherFiltros();
+      carregarSetores();
+      atualizarDash();
+    });
+
+    // Rótulos de exibição para as chaves de data.kpis.peso, que variam conforme o setor:
+    // categorias padrão (<1500 / 1500-2499 / ≥2500) ou categorias exclusivas da UCINCA (V15).
+    function rotuloFaixaPeso(chave) {
+      const rotulos = {
+        menor1500: '< 1.500g',
+        de1500a2499: '1.500–2.499g',
+        maior2500: '> 2.499g',
+        '1250-1499': '1.250–1.499g',
+        '1500-1799': '1.500–1.799g',
+        '1800-2000': '1.800–2.000g',
+        '>2000': '> 2.000g'
+      };
+      return rotulos[chave] || chave;
+    }
+
+    function preencherFiltros() {
+      const selectMes = document.getElementById('filtroMes');
+      const selectAno = document.getElementById('filtroAno');
+      const hoje = new Date();
+
+      const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+      selectMes.innerHTML = meses.map((m, i) => `<option value="${i+1}" ${i === hoje.getMonth() ? 'selected' : ''}>${m}</option>`).join('');
+      
+      const anoAtual = hoje.getFullYear();
+      selectAno.innerHTML = `<option value="${anoAtual}" selected>${anoAtual}</option><option value="${anoAtual-1}">${anoAtual-1}</option>`;
+    }
+
+    function carregarSetores() {
+      google.script.run.withSuccessHandler(setores => {
+        const select = document.getElementById('filtroSetor');
+        const options = setores.map(s => `<option value="${s.Nome_Setor}" ${s.Nome_Setor === setorAtual ? 'selected' : ''}>${rotuloSetor(s.Nome_Setor)}</option>`).join('');
+        select.innerHTML = options;
+        document.getElementById('headerSetor').innerHTML = options;
+        document.getElementById('headerSetor').value = setorAtual;
+      }).obterSetores();
+    }
+
+    function atualizarDash() {
+      const mes = document.getElementById('filtroMes').value;
+      const ano = document.getElementById('filtroAno').value;
+
+      google.script.run
+        .withSuccessHandler(renderizarDashboard)
+        .withFailureHandler(err => {
+          console.error(err);
+          alert('Erro ao carregar o dashboard: ' + (err && err.message ? err.message : err));
+        })
+        .obterEstatisticasDashboard(setorAtual, mes, ano);
+      if (abaAtual === 'qualidade') carregarIndicadoresQualidade();
+    }
+
+    function alternarAba(aba) {
+      abaAtual = aba;
+      document.getElementById('tituloDashboard').textContent = aba === 'qualidade' ? 'Dashboard de Qualidade' : 'Visão Geral';
+      document.getElementById('abaBtnVisaoGeral').classList.toggle('active', aba === 'visaoGeral');
+      document.getElementById('abaBtnQualidade').classList.toggle('active', aba === 'qualidade');
+      document.getElementById('painelVisaoGeral').classList.toggle('d-none', aba !== 'visaoGeral');
+      document.getElementById('painelQualidade').classList.toggle('d-none', aba !== 'qualidade');
+      if (aba === 'qualidade') carregarIndicadoresQualidade();
+    }
+
+    function carregarIndicadoresQualidade() {
+      const mes = Number(document.getElementById('filtroMes').value);
+      const ano = Number(document.getElementById('filtroAno').value);
+      const ultimoDia = new Date(ano, mes, 0).getDate();
+      const dataInicio = `${ano}-${String(mes).padStart(2, '0')}-01`;
+      const dataFim = `${ano}-${String(mes).padStart(2, '0')}-${String(ultimoDia).padStart(2, '0')}`;
+
+      google.script.run
+        .withSuccessHandler(renderizarIndicadoresQualidade)
+        .withFailureHandler(err => alert(err && err.message ? err.message : 'Não foi possível carregar os indicadores de qualidade.'))
+        .getDashboardIndicadoresQualidade(dataInicio, dataFim, setorAtual);
+    }
+
+    function renderizarIndicadoresQualidade(data) {
+      const totalRNsPele = Number(data.totalRNsInternados || 0);
+      document.getElementById('qPele1DiaPct').textContent = `${data.peleAPele1Dia.percentual}%`;
+      document.getElementById('qPele1DiaSub').textContent = `${data.peleAPele1Dia.sim} de ${totalRNsPele} RNs internados`;
+      document.getElementById('qPele2a4Pct').textContent = `${data.peleAPele2a4Dia.percentual}%`;
+      document.getElementById('qPele2a4Sub').textContent = `${data.peleAPele2a4Dia.sim} de ${totalRNsPele} RNs internados`;
+      document.getElementById('qPele1DiaBar').style.width = `${Math.max(0, Math.min(100, Number(data.peleAPele1Dia.percentual || 0)))}%`;
+      document.getElementById('qPele2a4Bar').style.width = `${Math.max(0, Math.min(100, Number(data.peleAPele2a4Dia.percentual || 0)))}%`;
+
+      document.getElementById('qExtracaoPct').textContent = `${data.extracaoLeite.percentual}%`;
+      document.getElementById('qExtracaoSub').textContent = `${data.extracaoLeite.sim} de ${data.totalRegistros} registros`;
+      document.getElementById('qAleitamentoPct').textContent = `${data.aleitamentoExclusivoAlta.percentual}%`;
+      document.getElementById('qAleitamentoSub').textContent = `${data.aleitamentoExclusivoAlta.sim} de ${data.aleitamentoExclusivoAlta.total} altas`;
+      const visitaVals = ['mae','pai','irmao','avos'].map(k => Number((data.visitacao && data.visitacao[k] && data.visitacao[k].percentual) || 0));
+      const visitaMedia = visitaVals.length ? Math.round(visitaVals.reduce((a,b)=>a+b,0)/visitaVals.length) : 0;
+      document.getElementById('qVisitacaoResumo').textContent = `${visitaMedia}%`;
+
+      if (chartVisitacao) chartVisitacao.destroy();
+      chartVisitacao = new Chart(document.getElementById('chartVisitacao'), {
+        type: 'bar',
+        data: {
+          labels: ['Mãe', 'Pai', 'Visita Irmão', 'Visita Avós'],
+          datasets: [{
+            label: '% de Visitação',
+            data: [data.visitacao.mae.percentual, data.visitacao.pai.percentual, data.visitacao.irmao.percentual, data.visitacao.avos.percentual],
+            backgroundColor: ['#087fb3', '#10aeb8', '#6ec6d0', '#5c78a8']
+          }]
+        },
+        options: { scales: { y: { beginAtZero: true, max: 100 } } }
+      });
+
+      // Etapa do Método Canguru: exclusiva da UCINCA (V15) - o card só é exibido quando o
+      // Dashboard está filtrado na UCINCA; nos demais setores a coluna de Visitação Familiar
+      // ocupa a largura toda.
+      const ehUcincaCanguru = String(setorAtual).trim().toUpperCase() === 'UCINCA';
+      document.getElementById('colEtapaCanguru').classList.toggle('d-none', !ehUcincaCanguru);
+      document.getElementById('colVisitacao').className = ehUcincaCanguru ? 'col-md-7' : 'col-md-12';
+
+      if (ehUcincaCanguru) {
+        if (chartEtapaCanguru) chartEtapaCanguru.destroy();
+        const etapas = data.etapaMetodoCanguru || {};
+        chartEtapaCanguru = new Chart(document.getElementById('chartEtapaCanguru'), {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(etapas).length ? Object.keys(etapas) : ['Sem registros'],
+            datasets: [{
+              data: Object.keys(etapas).length ? Object.values(etapas) : [1],
+              backgroundColor: ['#087fb3', '#10aeb8', '#6ec6d0', '#dc5364', '#7b95a8']
+            }]
+          }
+        });
+      }
+    }
+
+    function renderizarDashboard(data) {
+      const ehUEN = !!data.ehUEN;
+
+      // UEN: não existe percentual de ocupação tradicional (o número de leitos muda todo dia).
+      // O primeiro KPI card mostra a capacidade instalada acumulada (soma dia a dia) em vez da
+      // taxa de ocupação mensal, e o card de mortalidade explica a fórmula "justa" usada.
+      document.getElementById('kpiTaxaLabel').textContent = ehUEN
+        ? 'CAPACIDADE INSTALADA ACUMULADA (Leito-Dia Vaga Zero) Mensal'
+        : 'TAXA DE OCUPAÇÃO HOSPITALAR (%) Mensal';
+      document.getElementById('kpiTaxa').textContent = ehUEN
+        ? data.kpis.capacidadeInstaladaAcumulada
+        : `${data.kpis.taxaOcupacaoMensal}%`;
+      document.getElementById('kpiMortalidadeNota').textContent = ehUEN
+        ? `Taxa justa: óbitos ÷ (óbitos + transferências p/ UTIN = ${data.kpis.transferenciasParaUTINMes})`
+        : '';
+
+      document.getElementById('kpiMediaPacientes').textContent = data.kpis.mediaPacientesDia;
+      document.getElementById('kpiMortalidade').textContent = `${data.kpis.taxaMortalidade}%`;
+      document.getElementById('kpiObitosMes').textContent = data.kpis.obitosMes;
+      const blocoRNs = document.getElementById('blocoRNsInternadosMes');
+      const ehAlcon = ['ALCON 1','ALCON 2'].includes(String(setorAtual).trim().toUpperCase());
+      blocoRNs.classList.toggle('d-none', !ehAlcon);
+      document.getElementById('kpiRNsInternadosMes').textContent = ehAlcon ? (data.kpis.rnsInternadosMes || 0) : 0;
+      document.getElementById('admissoesInternasMes').textContent = data.kpis.admissoesInternasMes;
+      document.getElementById('admissoesExternasMes').textContent = data.kpis.admissoesExternasMes;
+      document.getElementById('admissoesTotalGeral').textContent = data.kpis.admissoesMes;
+      document.getElementById('altasDomiciliar').textContent = data.kpis.altasDomiciliar;
+      document.getElementById('altasMunicipio').textContent = data.kpis.altasMunicipio;
+      document.getElementById('altasTotalGeral').textContent = data.kpis.altasMes;
+      document.getElementById('transfInternasMes').textContent = data.kpis.transferenciasInternasMes;
+      document.getElementById('transfExternasMes').textContent = data.kpis.transferenciasExternasMes;
+      document.getElementById('transfTotalGeral').textContent = data.kpis.transfMes;
+      const cardEvasoesMes = document.getElementById('cardEvasoesMes');
+      if (cardEvasoesMes) {
+        const ehALCON = ['ALCON 1', 'ALCON 2'].indexOf(String(setorAtual || '').trim().toUpperCase()) !== -1;
+        cardEvasoesMes.classList.toggle('d-none', !ehALCON);
+        document.getElementById('evasoesMes').textContent = data.kpis.evasoesMes || 0;
+      }
+      // Faixa de Peso: UCINCA usa categorias próprias (V15); demais setores mantêm a faixa
+      // padrão. As chaves de data.kpis.peso variam conforme o setor - ver rotuloFaixaPeso().
+      const pesoContainer = document.getElementById('pesoFaixasContainer');
+      pesoContainer.innerHTML = Object.keys(data.kpis.peso || {}).map(chave => `
+        <div class="d-flex justify-content-between small">
+          <span>${rotuloFaixaPeso(chave)}</span><strong>${data.kpis.peso[chave]}</strong>
+        </div>
+      `).join('');
+
+      // Card exclusivo da UCINCA: adequação de peso nas Altas.
+      const blocoUcinca = document.getElementById('blocoAltasPesoUcinca');
+      const altasPeso = data.estatisticas && data.estatisticas.altasPesoUcinca;
+      if (altasPeso) {
+        blocoUcinca.classList.remove('d-none');
+        document.getElementById('limiarDomiciliar').textContent = altasPeso.domiciliarCapital.limiarMinimo.toLocaleString('pt-BR');
+        document.getElementById('limiarMunicipio').textContent = altasPeso.outroMunicipio.limiarMinimo.toLocaleString('pt-BR');
+        document.getElementById('margemTardia').textContent = altasPeso.margemAltaTardia.toLocaleString('pt-BR');
+
+        document.getElementById('domAbaixo').textContent = altasPeso.domiciliarCapital.abaixoPesoIdeal;
+        document.getElementById('domIdeal').textContent = altasPeso.domiciliarCapital.pesoIdeal;
+        document.getElementById('domTardia').textContent = altasPeso.domiciliarCapital.altaTardia;
+        document.getElementById('domNaoInformado').textContent = altasPeso.domiciliarCapital.naoInformado;
+
+        document.getElementById('munAbaixo').textContent = altasPeso.outroMunicipio.abaixoPesoIdeal;
+        document.getElementById('munIdeal').textContent = altasPeso.outroMunicipio.pesoIdeal;
+        document.getElementById('munTardia').textContent = altasPeso.outroMunicipio.altaTardia;
+        document.getElementById('munNaoInformado').textContent = altasPeso.outroMunicipio.naoInformado;
+
+        document.getElementById('totAbaixo').textContent = altasPeso.total.abaixoPesoIdeal;
+        document.getElementById('totIdeal').textContent = altasPeso.total.pesoIdeal;
+        document.getElementById('totTardia').textContent = altasPeso.total.altaTardia;
+        document.getElementById('totNaoInformado').textContent = altasPeso.total.naoInformado;
+      } else {
+        blocoUcinca.classList.add('d-none');
+      }
+
+      // Gráfico Ocupação Diária (na UEN: capacidade diária de leitos extras / RNs internados por dia)
+      document.getElementById('tituloChartOcupacao').textContent = ehUEN
+        ? 'Capacidade Diária de Leitos Extras (Leito Extra CCO Neonatal)'
+        : 'Evolução da Ocupação Diária';
+      if (chartOcup) chartOcup.destroy();
+      chartOcup = new Chart(document.getElementById('chartOcupacao'), {
+        type: 'line',
+        data: {
+          labels: data.porDia.map(d => d.dia),
+          datasets: [{
+            label: ehUEN ? 'RNs em Leito Extra CCO Neonatal' : 'Ocupação 24h',
+            data: data.porDia.map(d => d.ocupacao),
+            borderColor: '#087fb3',
+            backgroundColor: 'rgba(8, 127, 179, 0.12)',
+            fill: true,
+            tension: 0.3
+          }]
+        }
+      });
+
+      // Gráfico Procedência
+      if (chartProc) chartProc.destroy();
+      chartProc = new Chart(document.getElementById('chartProcedencia'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(data.estatisticas.procedencia),
+          datasets: [{
+            data: Object.values(data.estatisticas.procedencia),
+            backgroundColor: ['#087fb3', '#10aeb8', '#6ec6d0', '#dc5364', '#7b95a8']
+          }]
+        }
+      });
+
+      // Gráfico Faixas de Permanência
+      if (chartFaix) chartFaix.destroy();
+      chartFaix = new Chart(document.getElementById('chartFaixas'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data.estatisticas.faixasPermanencia),
+          datasets: [{
+            label: 'Pacientes',
+            data: Object.values(data.estatisticas.faixasPermanencia),
+            backgroundColor: '#10aeb8'
+          }]
+        }
+      });
+
+      // Gráfico Giro dos Leitos
+      if (chartGiro) chartGiro.destroy();
+      chartGiro = new Chart(document.getElementById('chartGiros'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data.estatisticas.girosPorLeito),
+          datasets: [{
+            label: 'Saídas no Mês',
+            data: Object.values(data.estatisticas.girosPorLeito),
+            backgroundColor: '#087fb3'
+          }]
+        }
+      });
+    }
+
+    function trocarSetor(novoSetor) {
+      setorAtual = novoSetor;
+      document.getElementById('headerSetor').value = setorAtual;
+      atualizarDash();
+    }
+
+    function abrirRelatorioDashboard() {
+      // Mantém o usuário no dashboard e sinaliza que o relatório gerencial está disponível no módulo Dashboard Geral.
+      window.top.location.href = `${appUrl}?view=dashboardgeral&token=${token}&setor=${encodeURIComponent(setorAtual)}`;
+    }
+
+    function voltarPainel() {
+      window.top.location.href = `${appUrl}?view=painel&token=${token}&setor=${encodeURIComponent(setorAtual)}`;
+    }
+  </script>
+</body>
+</html>
