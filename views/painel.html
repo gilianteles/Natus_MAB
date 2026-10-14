@@ -2,26 +2,12 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/png" href="/assets/img-e02cd94544.png">
   <title>Natus - Censo MAB</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    .navbar-natus { background: #2b9cc3 !important; }
-    .navbar-natus .navbar-brand { letter-spacing: .01em; }
-    .bed-card { transition: transform 0.2s, box-shadow 0.2s; border-radius: 8px; cursor: pointer; }
-    .bed-card:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.15)!important; }
-    .status-Livre { background-color: #d1e7dd; border-color: #badbcc; color: #0f5132; }
-    .status-Ocupado { background-color: #f8d7da; border-color: #f5c2c7; color: #842029; }
-    .status-Reserva { background-color: #fff3cd; border-color: #ffecb5; color: #664d03; }
-    .status-Bloqueado { background-color: #343a40; border-color: #212529; color: #fff; }
-    .card-highlight { border: 3px solid #0d6efd !important; animation: pulse 1.5s infinite; }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
-    }
-    /* Menus dos cards nunca podem ultrapassar o Offcanvas de detalhes (Bootstrap: 1045). */
+  <style>/* Menus dos cards nunca podem ultrapassar o Offcanvas de detalhes (Bootstrap: 1045). */
     .card .acoes-dropdown { position: relative; z-index: 20; }
     .card .acoes-dropdown .dropdown-menu { z-index: 30; min-width: 245px; }
     .bed-card:has(.acoes-dropdown .dropdown-menu.show) { position: relative; z-index: 50; }
@@ -30,108 +16,84 @@
     .acoes-dropdown .dropdown-item { padding: .55rem .85rem; }
   </style>
   <script src="/natus-rpc.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!--@head-->
 </head>
-<body class="bg-light">
+<body class="nt-body">
 
-  <nav class="navbar navbar-expand-lg navbar-dark navbar-natus mb-4 shadow">
-    <div class="container-fluid px-4">
-      <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#"><img src="/assets/img-f8d36f2a26.png" alt="Natus" style="width:34px;height:34px;object-fit:contain;border-radius:8px;"> Natus - Censo MAB</a>
-      <div class="d-flex align-items-center gap-3">
-        <label class="text-white fw-semibold mb-0">Setor:</label>
-        <select id="seletorSetor" class="form-select form-select-sm fw-bold border-0 shadow-sm" onchange="trocarSetor(this.value)">
-        </select>
-        <button class="btn btn-outline-light btn-sm fw-semibold" onclick="abrirDashboard()">
-          <i class="bi bi-bar-chart-fill me-1"></i> Dashboard Mensal
-        </button>
-        <button class="btn btn-outline-light btn-sm fw-semibold" id="btnGerenciarLeitos" data-bs-toggle="modal" data-bs-target="#modalGerenciarLeitos">
-          <i class="bi bi-gear-fill me-1"></i> Gerenciar Leitos
-        </button>
-        <button class="btn btn-outline-light btn-sm fw-semibold d-none" id="btnVoltarNIR" onclick="voltarParaNIR()">
-          <i class="bi bi-diagram-3-fill me-1"></i> Painel NIR
-        </button>
-        <button class="btn btn-outline-light btn-sm fw-semibold" id="btnHistoricoPaciente" onclick="abrirHistorico()">
-          <i class="bi bi-clock-history me-1"></i> Histórico de Pacientes
-        </button>
-        <span class="text-white-50 small d-none d-lg-inline"><?!= nomeUsuario ?></span>
-        <button class="btn btn-outline-light btn-sm fw-semibold" onclick="sair()">
-          <i class="bi bi-box-arrow-right"></i>
-        </button>
-      </div>
+  <!--@rail-->
+  <header class="nt-topbar">
+    <div>
+      <div class="nt-crumb"><span>Natus</span><i class="bi bi-chevron-right"></i><span>Censo MAB</span></div>
+      <h1 class="nt-title">Censo de leitos</h1>
     </div>
-  </nav>
+    <div class="nt-actions">
+      <label class="nt-chip"><i class="bi bi-hospital"></i>
+        <select id="seletorSetor" onchange="trocarSetor(this.value)" aria-label="Setor"></select>
+      </label>
+      <button class="btn btn-light btn-sm d-none" id="btnVoltarNIR" onclick="voltarParaNIR()"><i class="bi bi-diagram-3-fill me-1"></i>Painel NIR</button>
+      <button class="btn btn-light btn-sm" id="btnGerenciarLeitos" data-bs-toggle="modal" data-bs-target="#modalGerenciarLeitos"><i class="bi bi-gear-fill me-1"></i>Gerenciar leitos</button>
+      <!--@useractions-->
+    </div>
+  </header>
 
   <div class="container-fluid px-4">
     <!-- Indicadores Operacionais do Dia -->
-    <div class="row g-2 mb-4">
-      <div class="col-md">
-        <div class="card text-center shadow-sm border-0">
-          <div class="card-body p-2">
-            <h6 class="card-subtitle text-muted small" id="kpiTaxaLabel">Taxa de Ocupação</h6>
-            <h4 class="card-title text-primary fw-bold mb-0" id="kpi-taxa">0%</h4>
-          </div>
+    <section class="nt-kpis" aria-label="Indicadores do dia">
+      <article class="nt-kpi deep">
+        <div class="nt-kpi-top"><span class="nt-kpi-label" id="kpiTaxaLabel">Taxa de Ocupação</span><span class="nt-kpi-icon"><i class="bi bi-activity"></i></span></div>
+        <div class="nt-kpi-value" id="kpi-taxa">0%</div>
+        <div class="nt-bar" aria-hidden="true"><i></i></div>
+      </article>
+      <article class="nt-kpi t-bad">
+        <div class="nt-kpi-top"><span class="nt-kpi-label">Leitos Ocupados</span><span class="nt-kpi-icon"><i class="bi bi-person-fill"></i></span></div>
+        <div class="nt-kpi-value" id="kpi-ocupados">0/0</div>
+      </article>
+      <article class="nt-kpi">
+        <div class="nt-kpi-top"><span class="nt-kpi-label">Internações Hoje</span><span class="nt-kpi-icon"><i class="bi bi-box-arrow-in-down"></i></span></div>
+        <div class="nt-kpi-value" id="kpi-internacoes-total">0</div>
+        <div class="nt-kpi-sub"><span><i class="bi bi-arrow-down-circle me-1"></i>Internas <strong id="kpi-internacoes-internas">0</strong></span><span><i class="bi bi-hospital me-1"></i>Externas <strong id="kpi-internacoes-externas">0</strong></span></div>
+      </article>
+      <article class="nt-kpi t-ok">
+        <div class="nt-kpi-top"><span class="nt-kpi-label">Altas Hoje</span><span class="nt-kpi-icon"><i class="bi bi-house-heart-fill"></i></span></div>
+        <div class="nt-kpi-value" id="kpi-altas">0</div>
+      </article>
+      <article class="nt-kpi t-slate">
+        <div class="nt-kpi-top"><span class="nt-kpi-label">Óbitos Hoje</span><span class="nt-kpi-icon"><i class="bi bi-heartbreak-fill"></i></span></div>
+        <div class="nt-kpi-value" id="kpi-obitos">0</div>
+      </article>
+      <article class="nt-kpi t-bad d-none" id="cardEvasoesHoje">
+        <div class="nt-kpi-top"><span class="nt-kpi-label">Evasões Hoje</span><span class="nt-kpi-icon"><i class="bi bi-door-open-fill"></i></span></div>
+        <div class="nt-kpi-value" id="kpi-evasoes">0</div>
+      </article>
+      <article class="nt-kpi t-warn">
+        <div class="nt-kpi-top"><span class="nt-kpi-label">Transferências Hoje</span><span class="nt-kpi-icon"><i class="bi bi-arrow-left-right"></i></span></div>
+        <div class="nt-kpi-value" id="kpi-transf-total">0</div>
+        <div class="nt-kpi-sub"><span><i class="bi bi-arrow-left-right me-1"></i>Internas <strong id="kpi-transf-internas">0</strong></span><span><i class="bi bi-box-arrow-up-right me-1"></i>Externas <strong id="kpi-transf-externas">0</strong></span></div>
+      </article>
+    </section>
+
+    <!-- Tendência e distribuição -->
+    <section class="nt-charts" aria-label="Gráficos do setor">
+      <div class="nt-panel">
+        <div class="nt-panel-head">
+          <div><h6>Tendência de ocupação</h6><small id="ntTendenciaMes">mês atual</small></div>
+          <span class="nt-pill" id="ntPillMedia">—</span>
         </div>
+        <div class="nt-chart-wrap"><canvas id="ntChartTendencia" role="img" aria-label="Gráfico de tendência de ocupação no mês"></canvas>
+          <div id="ntTendenciaVazio" class="d-none text-muted small position-absolute top-50 start-50 translate-middle">Sem dados no período.</div></div>
       </div>
-      <div class="col-md">
-        <div class="card text-center shadow-sm border-0">
-          <div class="card-body p-2">
-            <h6 class="card-subtitle text-muted small">Leitos Ocupados</h6>
-            <h4 class="card-title text-danger fw-bold mb-0" id="kpi-ocupados">0/0</h4>
-          </div>
-        </div>
+      <div class="nt-panel">
+        <div class="nt-panel-head"><div><h6>Situação dos leitos</h6><small>agora</small></div><span class="nt-pill" id="ntPillLeitos">—</span></div>
+        <div class="nt-chart-wrap" style="height:170px"><canvas id="ntChartStatus" role="img" aria-label="Distribuição dos leitos por situação"></canvas>
+          <div class="nt-donut-center"><b id="ntDonutValor">—</b><span>ocupação</span></div></div>
+        <div class="nt-legend" id="ntLegendaStatus"></div>
       </div>
-      <div class="col-md">
-        <div class="card text-center shadow-sm border-0">
-          <div class="card-body p-2">
-            <h6 class="card-subtitle text-muted small">Internações Hoje</h6>
-            <h4 class="card-title text-primary fw-bold mb-1" id="kpi-internacoes-total">0</h4>
-            <div class="d-flex justify-content-center gap-3 small">
-              <span class="text-info"><i class="bi bi-arrow-down-circle me-1"></i>Internas: <strong id="kpi-internacoes-internas">0</strong></span>
-              <span class="text-primary"><i class="bi bi-hospital me-1"></i>Externas: <strong id="kpi-internacoes-externas">0</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md">
-        <div class="card text-center shadow-sm border-0">
-          <div class="card-body p-2">
-            <h6 class="card-subtitle text-muted small">Altas Hoje</h6>
-            <h4 class="card-title text-success fw-bold mb-0" id="kpi-altas">0</h4>
-          </div>
-        </div>
-      </div>
-      <div class="col-md">
-        <div class="card text-center shadow-sm border-0">
-          <div class="card-body p-2">
-            <h6 class="card-subtitle text-muted small">Óbitos Hoje</h6>
-            <h4 class="card-title text-dark fw-bold mb-0" id="kpi-obitos">0</h4>
-          </div>
-        </div>
-      </div>
-      <div class="col-md d-none" id="cardEvasoesHoje">
-        <div class="card text-center shadow-sm border-0">
-          <div class="card-body p-2">
-            <h6 class="card-subtitle text-muted small">Evasões Hoje</h6>
-            <h4 class="card-title text-danger fw-bold mb-0" id="kpi-evasoes">0</h4>
-          </div>
-        </div>
-      </div>
-      <div class="col-md">
-        <div class="card text-center shadow-sm border-0">
-          <div class="card-body p-2">
-            <h6 class="card-subtitle text-muted small">Transferências Hoje</h6>
-            <h4 class="card-title text-warning fw-bold mb-1" id="kpi-transf-total">0</h4>
-            <div class="d-flex justify-content-center gap-3 small">
-              <span class="text-warning"><i class="bi bi-arrow-left-right me-1"></i>Internas: <strong id="kpi-transf-internas">0</strong></span>
-              <span class="text-danger"><i class="bi bi-box-arrow-up-right me-1"></i>Externas: <strong id="kpi-transf-externas">0</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </section>
 
     <!-- Controles de Ação, Busca e Filtros -->
     <div class="row g-3 mb-4 align-items-center">
-      <div class="col-md-5 d-flex gap-2">
+      <div class="col-lg-6 d-flex gap-2 flex-wrap">
         <button type="button" class="btn btn-success fw-semibold" id="btnAdmitirPaciente" onclick="abrirNovaInternacaoGenerica()">
           <i class="bi bi-person-plus-fill"></i> Admitir Paciente
         </button>
@@ -146,15 +108,15 @@
         </button>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-lg-3 col-md-6">
         <div class="input-group">
           <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-          <input type="text" id="inputBusca" class="form-control" placeholder="🔍 Buscar paciente ou leito..." onkeyup="filtrarEBuscar()">
+          <input type="text" id="inputBusca" class="form-control" placeholder="Buscar paciente ou leito..." onkeyup="filtrarEBuscar()">
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div class="d-flex gap-2 align-items-center justify-content-md-end bg-white p-2 rounded border" id="filtrosStatusLeito">
+      <div class="col-lg-3 col-md-6">
+        <div class="d-flex gap-2 align-items-center justify-content-md-end flex-wrap bg-white px-3 py-2 border" style="border-radius:14px" id="filtrosStatusLeito">
           <span class="fw-bold small me-1">Status:</span>
           <div class="form-check form-check-inline m-0">
             <input class="form-check-input filter-check" type="checkbox" id="chkLivre" value="Livre" checked onchange="filtrarEBuscar()">
@@ -183,9 +145,7 @@
     </div>
 
     <!-- Painel Principal de Leitos -->
-    <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
-      <i class="bi bi-grid-3x3-gap-fill text-primary"></i> Painel Operacional - <span id="tituloSetor" class="text-primary"></span>
-    </h5>
+    <h5 class="nt-section-title"><i class="bi bi-grid-3x3-gap-fill"></i> Leitos · <span id="tituloSetor" class="text-primary"></span></h5>
     <div class="row g-3 mb-5" id="grid-leitos"></div>
   </div>
 
@@ -1046,6 +1006,7 @@
     function renderizarDashboard(data) {
       const { setorAtual, listaSetores, leitos, resumo, internadosAtivos, pacientesSemLeito } = data;
       globalDataLeitos = leitos;
+      if (window.natusAtualizarGraficos) natusAtualizarGraficos(data);
       globalPacientesSemLeito = pacientesSemLeito || [];
       // Une leitos ocupados + pacientes sem leito atribuído numa única lista, para que
       // "Registrar Saída" funcione também para quem ainda não tem leito neste setor.

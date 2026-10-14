@@ -2,88 +2,29 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/png" href="/assets/img-e02cd94544.png">
   <title>Natus - Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <style>
-    :root{
-      --natus-blue:#087fb3;
-      --natus-blue-dark:#07598d;
-      --natus-cyan:#10aeb8;
-      --natus-soft:#eef8fc;
-      --natus-border:#cfe6f2;
-      --natus-text:#123f69;
-      --natus-muted:#6c8398;
-      --natus-shadow:0 6px 20px rgba(15,76,105,.08);
-    }
-    *{box-sizing:border-box}
-    body{background:#f7fbfd;color:var(--natus-text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;}
-    .natus-header{height:86px;background:linear-gradient(100deg,#0b7fae 0%,#0875a8 58%,#0b689d 100%);color:#fff;box-shadow:0 4px 14px rgba(8,93,135,.18);}
-    .natus-header .brand-logo{width:58px;height:58px;object-fit:cover;border-radius:14px;background:#fff1;padding:2px;}
-    .natus-header .brand-title{font-size:1.8rem;line-height:1;font-weight:700;letter-spacing:-.02em;}
-    .natus-header .brand-subtitle{font-size:1.15rem;font-weight:500;opacity:.95;}
-    .natus-header .header-select{background:transparent;color:#fff;border:0;border-bottom:1px solid rgba(255,255,255,.35);font-weight:600;outline:0;min-width:135px;}
-    .natus-header .header-select option{color:#123f69;background:#fff;}
-    .content-wrap{max-width:1500px;margin:0 auto;padding:20px 22px 40px;}
-    .filter-bar{background:#fff;border:1px solid var(--natus-border);border-radius:14px;padding:12px 16px;box-shadow:var(--natus-shadow);}
-    .filter-bar .form-label{color:var(--natus-muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.03em;}
-    .filter-bar .form-select{border-color:#b9d7e8;border-radius:9px;color:var(--natus-text);font-weight:600;}
-    .dashboard-tabs{border-bottom:1px solid #d9e8f0;margin-top:16px;margin-bottom:18px;}
-    .dashboard-tabs .nav-link{border:0;border-bottom:3px solid transparent;border-radius:0;color:#49627a;font-weight:600;padding:12px 18px;background:transparent;}
-    .dashboard-tabs .nav-link.active{color:#0874a8;background:transparent;border-bottom-color:#0aa0c5;}
-    .dashboard-section{background:#fff;border:1px solid var(--natus-border);border-radius:16px;padding:18px;box-shadow:var(--natus-shadow);}
-    .section-title{color:#0a4e82;font-weight:700;}
-    .kpi-card{border-radius:13px;border:1px solid var(--natus-border);background:#fff;box-shadow:0 3px 12px rgba(14,74,102,.05);overflow:hidden;position:relative;}
-    .kpi-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent,#0b84b4);}
-    .kpi-card .kpi-icon{width:40px;height:40px;border-radius:11px;background:var(--natus-soft);display:flex;align-items:center;justify-content:center;color:var(--natus-blue);font-size:1.2rem;}
-    .kpi-card .kpi-label{font-size:.73rem;color:#6c8294;text-transform:uppercase;font-weight:700;letter-spacing:.025em;}
-    .kpi-card .kpi-value{font-size:2rem;line-height:1.05;color:#07578e;font-weight:750;}
-    .kpi-card .kpi-sub{color:#71889a;font-size:.78rem;}
-    .metric-strip{background:linear-gradient(135deg,#f2fbfe,#eaf7fb);border:1px solid var(--natus-border);border-radius:13px;}
-    .metric-strip .metric-value{color:#075b91;font-size:1.35rem;font-weight:750;}
-    .chart-box{background:#fff;border:1px solid var(--natus-border);border-radius:14px;padding:16px;box-shadow:var(--natus-shadow);}
-    .chart-box h6{color:#174f79;font-weight:700;}
-    .quality-hero{background:linear-gradient(135deg,#f0fbfe 0%,#eaf7fc 100%);border:1px solid var(--natus-border);border-radius:15px;padding:18px;}
-    .quality-hero .hero-title{color:#075f95;font-weight:750;font-size:1.15rem;}
-    .ppe-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
-    .ppe-card{background:#fff;border:1px solid #cfe4ef;border-radius:12px;padding:18px;text-align:center;}
-    .ppe-card .ppe-icon{font-size:2rem;color:#087fb3;}
-    .ppe-card .ppe-label{font-weight:700;color:#124d78;}
-    .ppe-card .ppe-value{font-size:2.05rem;font-weight:800;color:#0875a8;line-height:1.1;margin-top:8px;}
-    .ppe-card .ppe-sub{font-size:.78rem;color:#567087;}
-    .progress-natus{height:10px;background:#dfeaf0;border-radius:99px;overflow:hidden;margin-top:12px;}
-    .progress-natus>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#0db1b7,#087fb3);}
-    .quality-info{background:#eaf5fb;border:1px solid #d6eaf3;border-radius:10px;color:#2e607f;font-size:.8rem;padding:11px 13px;margin-top:12px;}
-    .quality-list-title{color:#124e7a;font-weight:750;font-size:1.15rem;margin:22px 0 10px;}
-    .quality-row{background:#fff;border:1px solid var(--natus-border);border-radius:11px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;box-shadow:0 2px 7px rgba(14,74,102,.035);}
-    .quality-row .q-icon{width:36px;height:36px;border-radius:50%;background:#e9f7fc;color:#087fb3;display:flex;align-items:center;justify-content:center;font-size:1rem;}
-    .quality-row .q-name{font-weight:600;color:#184f78;}
-    .quality-row .q-value{font-weight:800;color:#123f69;}
-    .quality-row .q-arrow{color:#7b95a8;font-size:1.1rem;}
-    .loading-overlay{background:rgba(247,251,253,.92);}
-    .text-natus{color:#0875a8!important}
-    @media (max-width:900px){.natus-header .brand-title{font-size:1.35rem}.natus-header .brand-subtitle{font-size:.9rem}.ppe-grid{grid-template-columns:1fr}.content-wrap{padding:14px 10px 30px}}
-  </style>
+  
   <script src="/natus-rpc.js"></script>
+  <!--@head-->
 </head>
-<body class="bg-light">
-  <nav class="natus-header d-flex align-items-center">
-    <div class="container-fluid px-4 d-flex align-items-center justify-content-between gap-3">
-      <div class="d-flex align-items-center gap-3">
-        <img src="/assets/img-be08707093.png" class="brand-logo" alt="Natus">
-        <div><div class="brand-title">Natus <span class="brand-subtitle">- <span id="tituloDashboard">Visão Geral</span></span></div></div>
-      </div>
-      <div class="d-flex align-items-center gap-3">
-        <div class="d-flex align-items-center gap-2">
-          <i class="bi bi-hospital"></i>
-          <select id="headerSetor" class="header-select" onchange="trocarSetor(this.value)" aria-label="Setor"></select>
-        </div>
-        <button class="btn btn-sm text-white border border-white border-opacity-50 rounded-circle" onclick="voltarPainel()" title="Voltar ao Painel Operacional"><i class="bi bi-person-circle fs-5"></i></button>
-      </div>
+<body class="nt-body">
+  <!--@rail-->
+  <header class="nt-topbar">
+    <div>
+      <div class="nt-crumb"><span>Natus</span><i class="bi bi-chevron-right"></i><span>Dashboard mensal</span></div>
+      <h1 class="nt-title">Dashboard <span class="nt-sub" id="tituloDashboard">Visão Geral</span></h1>
     </div>
-  </nav>
+    <div class="nt-actions">
+      <label class="nt-chip"><i class="bi bi-hospital"></i><select id="headerSetor" onchange="trocarSetor(this.value)" aria-label="Setor"></select></label>
+      <button class="btn btn-light btn-sm" onclick="voltarPainel()" title="Voltar ao Painel Operacional"><i class="bi bi-arrow-left me-1"></i>Painel operacional</button>
+      <!--@useractions-->
+    </div>
+  </header>
 
   <div class="content-wrap">
     <div class="filter-bar d-flex align-items-end justify-content-between gap-3 flex-wrap mb-1">
@@ -126,17 +67,17 @@
       <div class="d-flex align-items-center justify-content-between mb-3"><h5 class="section-title mb-0"><i class="bi bi-bar-chart-line-fill me-2"></i>Visão Geral</h5><span class="small text-muted">Indicadores do período selecionado</span></div>
     <div class="row g-3 mb-4">
       <div class="col-md-3">
-        <div class="kpi-card p-3 h-100" style="--accent:#087fb3;">
+        <div class="kpi-card p-3 h-100" style="--accent:#0FA394;">
           <div class="d-flex align-items-start justify-content-between"><div><div class="kpi-label" id="kpiTaxaLabel">Taxa de Ocupação Hospitalar (%) Mensal</div><div class="kpi-value mt-2" id="kpiTaxa">0%</div></div><div class="kpi-icon"><i class="bi bi-hospital"></i></div></div>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="kpi-card p-3 h-100" style="--accent:#10aeb8;">
+        <div class="kpi-card p-3 h-100" style="--accent:#38BDF8;">
           <div class="d-flex align-items-start justify-content-between"><div><div class="kpi-label">Média Pacientes/DIA</div><div class="kpi-value mt-2" id="kpiMediaPacientes">0</div></div><div class="kpi-icon"><i class="bi bi-person-fill"></i></div></div>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="kpi-card p-3 h-100" style="--accent:#dc5364;">
+        <div class="kpi-card p-3 h-100" style="--accent:#F87171;">
           <div class="d-flex align-items-start justify-content-between"><div><div class="kpi-label">Mortalidade / Óbitos no mês</div><div class="kpi-value mt-2" id="kpiMortalidade">0%</div><div class="kpi-sub mt-1">Óbitos: <strong id="kpiObitosMes">0</strong></div><div class="kpi-sub" id="kpiMortalidadeNota"></div></div><div class="kpi-icon"><i class="bi bi-heart-pulse-fill"></i></div></div>
         </div>
       </div>
@@ -146,7 +87,7 @@
         </div>
       </div>
       <div class="col-md-3 d-none" id="blocoRNsInternadosMes">
-        <div class="kpi-card p-3 h-100" style="--accent:#10aeb8;">
+        <div class="kpi-card p-3 h-100" style="--accent:#38BDF8;">
           <div class="d-flex align-items-start justify-content-between">
             <div><div class="kpi-label">RNs Internados no Mês</div><div class="kpi-value mt-2" id="kpiRNsInternadosMes">0</div><div class="kpi-sub mt-1">Somente RN internado sozinho</div></div>
             <div class="kpi-icon"><i class="bi bi-person-heart"></i></div>
@@ -387,7 +328,7 @@
           datasets: [{
             label: '% de Visitação',
             data: [data.visitacao.mae.percentual, data.visitacao.pai.percentual, data.visitacao.irmao.percentual, data.visitacao.avos.percentual],
-            backgroundColor: ['#087fb3', '#10aeb8', '#6ec6d0', '#5c78a8']
+            backgroundColor: ['#0FA394', '#38BDF8', '#A78BFA', '#F5B73B']
           }]
         },
         options: { scales: { y: { beginAtZero: true, max: 100 } } }
@@ -409,7 +350,7 @@
             labels: Object.keys(etapas).length ? Object.keys(etapas) : ['Sem registros'],
             datasets: [{
               data: Object.keys(etapas).length ? Object.values(etapas) : [1],
-              backgroundColor: ['#087fb3', '#10aeb8', '#6ec6d0', '#dc5364', '#7b95a8']
+              backgroundColor: ['#0FA394', '#38BDF8', '#A78BFA', '#F87171', '#94A3B8']
             }]
           }
         });
@@ -502,8 +443,8 @@
           datasets: [{
             label: ehUEN ? 'RNs em Leito Extra CCO Neonatal' : 'Ocupação 24h',
             data: data.porDia.map(d => d.ocupacao),
-            borderColor: '#087fb3',
-            backgroundColor: 'rgba(8, 127, 179, 0.12)',
+            borderColor: '#0FA394',
+            backgroundColor: 'rgba(15, 163, 148, 0.14)',
             fill: true,
             tension: 0.3
           }]
@@ -518,7 +459,7 @@
           labels: Object.keys(data.estatisticas.procedencia),
           datasets: [{
             data: Object.values(data.estatisticas.procedencia),
-            backgroundColor: ['#087fb3', '#10aeb8', '#6ec6d0', '#dc5364', '#7b95a8']
+            backgroundColor: ['#0FA394', '#38BDF8', '#A78BFA', '#F87171', '#94A3B8']
           }]
         }
       });
@@ -532,7 +473,7 @@
           datasets: [{
             label: 'Pacientes',
             data: Object.values(data.estatisticas.faixasPermanencia),
-            backgroundColor: '#10aeb8'
+            backgroundColor: '#38BDF8'
           }]
         }
       });
@@ -546,7 +487,7 @@
           datasets: [{
             label: 'Saídas no Mês',
             data: Object.values(data.estatisticas.girosPorLeito),
-            backgroundColor: '#087fb3'
+            backgroundColor: '#0FA394'
           }]
         }
       });

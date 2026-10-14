@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/png" href="/assets/img-e02cd94544.png">
   <title>Natus - Histórico</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -42,47 +43,30 @@
     }
   </style>
 
-<style id="natus-premium-shared">
-:root{--natus-blue:#087fb3;--natus-blue-dark:#07598d;--natus-cyan:#10aeb8;--natus-soft:#eef8fc;--natus-border:#cfe6f2;--natus-text:#123f69;--natus-muted:#6c8398;--natus-shadow:0 8px 24px rgba(15,76,105,.09);--natus-sidebar:272px}
-body{background:#f7fbfd!important;color:var(--natus-text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-.natus-premium-sidebar{position:fixed;inset:0 auto 0 0;width:var(--natus-sidebar);background:linear-gradient(180deg,var(--natus-blue-dark) 0%,var(--natus-blue) 58%,var(--natus-cyan) 140%);color:#fff;padding:22px 16px;z-index:1050;box-shadow:8px 0 30px rgba(7,89,141,.13);overflow-y:auto}
-.natus-brand{display:flex;align-items:center;gap:12px;padding:2px 8px 22px}.natus-brand-mark{width:48px;height:48px;border-radius:15px;background:rgba(255,255,255,.15);display:grid;place-items:center;font-size:25px;border:1px solid rgba(255,255,255,.2)}.natus-brand-title{font-size:18px;font-weight:800}.natus-brand-sub{font-size:11px;opacity:.78;margin-top:2px}.natus-nav-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding:12px 10px 7px}.natus-side-btn{width:100%;border:0;background:transparent;color:#fff;text-align:left;border-radius:12px;padding:11px 12px;display:flex;align-items:center;gap:10px;font-weight:650;margin-bottom:5px;transition:.18s}.natus-side-btn:hover{background:rgba(255,255,255,.13);transform:translateX(2px)}.natus-side-btn.active{background:#fff;color:var(--natus-blue-dark);box-shadow:0 7px 18px rgba(0,0,0,.12)}.natus-side-user{border-top:1px solid rgba(255,255,255,.18);margin-top:18px;padding:16px 8px 0}.natus-content{margin-left:var(--natus-sidebar);min-height:100vh}.natus-content .navbar{border-radius:0 0 18px 18px;margin-left:14px;margin-right:14px}.natus-content>.container-fluid,.natus-content>main{padding-left:24px!important;padding-right:24px!important}.natus-premium-shared-card{border:1px solid var(--natus-border)!important;border-radius:17px!important;background:#fff!important;box-shadow:var(--natus-shadow)!important}.natus-kicker{font-size:12px;color:var(--natus-muted);font-weight:600}.natus-page-title{font-weight:800;color:var(--natus-text)}
-@media(max-width:900px){:root{--natus-sidebar:0px}.natus-premium-sidebar{width:270px;transform:translateX(-100%);transition:.2s}.natus-premium-sidebar.open{transform:none}.natus-content{margin-left:0}.natus-content .navbar{margin-left:0;margin-right:0;border-radius:0}.natus-mobile-menu{display:inline-flex!important}.natus-content>.container-fluid,.natus-content>main{padding-left:14px!important;padding-right:14px!important}}
-.natus-mobile-menu{display:none;border:0;background:var(--natus-soft);color:var(--natus-blue);width:40px;height:40px;border-radius:10px;align-items:center;justify-content:center}
-</style>
-  <script src="/natus-rpc.js"></script>
-</head>
-<body class="bg-light">
 
-<aside class="natus-premium-sidebar" id="natusSharedSidebar">
-  <div class="natus-brand"><div class="natus-brand-mark"><i class="bi bi-heart-pulse-fill"></i></div><div><div class="natus-brand-title">Natus</div><div class="natus-brand-sub">Gestão Inteligente de Leitos</div></div></div>
-  <div class="natus-nav-label">Navegação</div>
-  <button class="natus-side-btn" onclick="natusGo('nir')"><i class="bi bi-diagram-3-fill"></i>Panorama dos Setores</button>
-  <button class="natus-side-btn" onclick="natusGo('dashboardgeral')"><i class="bi bi-grid-1x2-fill"></i>Dashboard Geral</button>
-  <button class="natus-side-btn" onclick="natusGo('historico')"><i class="bi bi-clock-history"></i>Histórico de Pacientes</button>
-  <button class="natus-side-btn" onclick="natusGo('painel')"><i class="bi bi-hospital-fill"></i>Painel Operacional</button>
-  <div class="natus-nav-label">Administração</div>
-  <button class="natus-side-btn" onclick="natusGo('nir')"><i class="bi bi-building-add"></i>Novo Setor / Administração</button>
-  <div class="natus-side-user"><div class="small opacity-75">Usuário conectado</div><div class="fw-bold mt-1"><?!= nomeUsuario ?></div><div class="small opacity-75"><?!= perfilUsuario ?></div><button class="natus-side-btn px-0 mt-2" onclick="natusSair()"><i class="bi bi-box-arrow-right"></i>Sair</button></div>
-</aside>
+  <script src="/natus-rpc.js"></script>
+  <!--@head-->
+</head>
+<body class="nt-body">
+
+<!--@rail-->
 <div class="natus-content">
 
 
-  <nav class="navbar navbar-dark bg-dark mb-4 shadow">
-    <div class="container-fluid px-4">
-      <span class="navbar-brand fw-bold"><i class="bi bi-clock-history me-2 text-primary"></i> Histórico de Pacientes</span>
-      <div class="d-flex align-items-center gap-3">
-        <span class="text-white-50 small d-none d-lg-inline"><?!= nomeUsuario ?> (<?!= perfilUsuario ?>)</span>
-        <button class="btn btn-outline-light btn-sm fw-semibold" onclick="voltarParaOperacional()">
-          <i class="bi bi-arrow-left me-1"></i> Voltar para tela operacional
-        </button>
-      </div>
+  <header class="nt-topbar">
+    <div>
+      <div class="nt-crumb"><span>Natus</span><i class="bi bi-chevron-right"></i><span>Prontuário</span></div>
+      <h1 class="nt-title">Histórico de pacientes</h1>
     </div>
-  </nav>
+    <div class="nt-actions">
+      <button class="btn btn-light btn-sm" onclick="voltarParaOperacional()"><i class="bi bi-arrow-left me-1"></i>Tela operacional</button>
+      <!--@useractions-->
+    </div>
+  </header>
 
   <div class="container-fluid px-4 pb-5">
     <!-- Busca -->
-    <div class="card shadow-sm border-0 mb-4 p-3" id="cardBusca">
+    <div class="card border-0 mb-4 p-3" id="cardBusca">
       <label class="form-label fw-semibold">Buscar paciente pelo nome</label>
       <div class="input-group">
         <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>

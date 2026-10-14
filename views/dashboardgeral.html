@@ -2,43 +2,33 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/png" href="/assets/img-e02cd94544.png">
   <title>Dashboard Geral - Natus</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <style>
-    /* Visual "clean": fundo neutro, cards brancos com faixa de cor lateral (em vez dos cards
-       maciços coloridos do Dashboard por setor), para diferenciar a tela Geral das demais. */
-    body { background: #f4f6f9; }
-    .navbar-clean { background: #fff; border-bottom: 1px solid #e9ecef; }
-    .kpi-clean { border-radius: 14px; border: none; border-left: 5px solid var(--accent, #0d6efd); background: #fff; box-shadow: 0 2px 14px rgba(20,20,43,0.05); }
-    .kpi-clean small { color: #8a93a3; font-weight: 600; letter-spacing: .03em; }
-    .kpi-clean h3 { color: #1f2937; }
-    .chart-box { background: #fff; border-radius: 14px; padding: 1.2rem; box-shadow: 0 2px 14px rgba(20,20,43,0.05); }
-    .nav-pills-clean .nav-link { color: #6c757d; font-weight: 600; border-radius: 10px; }
-    .nav-pills-clean .nav-link.active { background: #eaf1ff; color: #0d6efd; }
-    table.tabela-setores th { font-size: .75rem; color: #8a93a3; text-transform: uppercase; letter-spacing: .03em; border-top: none; }
-    .badge-uen { background: #6f42c1; }
-  </style>
+  <style>.badge-uen { background: #A78BFA; color:#1b1033; }
+    table.tabela-setores th { border-top: none; }</style>
   <script src="/natus-rpc.js"></script>
+  <!--@head-->
 </head>
-<body>
-  <nav class="navbar navbar-light navbar-clean mb-4 shadow-sm">
-    <div class="container-fluid px-4">
-      <span class="navbar-brand fw-bold text-dark"><i class="bi bi-bar-chart-line-fill me-2 text-primary"></i> Dashboard Geral <span class="text-muted">· Natus</span></span>
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-outline-dark btn-sm fw-semibold" onclick="abrirRelatorio()">
-          <i class="bi bi-file-earmark-bar-graph-fill me-1"></i> Relatório
-        </button>
-        <button class="btn btn-outline-secondary btn-sm" onclick="voltarNIR()"><i class="bi bi-arrow-left"></i> NIR</button>
-      </div>
+<body class="nt-body">
+  <!--@rail-->
+  <header class="nt-topbar">
+    <div>
+      <div class="nt-crumb"><span>Natus</span><i class="bi bi-chevron-right"></i><span>Visão consolidada</span></div>
+      <h1 class="nt-title">Dashboard geral</h1>
     </div>
-  </nav>
+    <div class="nt-actions">
+      <button class="btn btn-light btn-sm" onclick="abrirRelatorio()"><i class="bi bi-file-earmark-bar-graph-fill me-1"></i>Relatório</button>
+      <!--@useractions-->
+    </div>
+  </header>
 
   <div class="container-fluid px-4">
-    <div class="card shadow-sm border-0 mb-4 p-3" style="border-radius:14px;">
+    <div class="card border-0 mb-4 p-3">
       <div class="row g-2 align-items-end">
         <div class="col-md-2">
           <label class="form-label small fw-semibold mb-1">Mês</label>
@@ -81,19 +71,19 @@
     <div id="painelVisaoGeral">
     <div class="row g-3 mb-4">
       <div class="col-md-3">
-        <div class="card kpi-clean p-3 h-100" style="--accent:#0d6efd;">
+        <div class="card kpi-clean p-3 h-100" style="--accent:#0FA394;">
           <small id="kpiTaxaLabel">TAXA DE OCUPAÇÃO HOSPITALAR (%) Mensal</small>
           <h3 class="fw-bold mb-0" id="kpiTaxa">0%</h3>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="card kpi-clean p-3 h-100" style="--accent:#198754;">
+        <div class="card kpi-clean p-3 h-100" style="--accent:#34D399;">
           <small>Média Pacientes/DIA</small>
           <h3 class="fw-bold mb-0" id="kpiMediaPacientes">0</h3>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="card kpi-clean p-3 h-100" style="--accent:#dc3545;">
+        <div class="card kpi-clean p-3 h-100" style="--accent:#F87171;">
           <small>Taxa de MORTALIDADE</small>
           <h3 class="fw-bold mb-0" id="kpiMortalidade">0%</h3><div class="small mt-1 text-muted">Óbitos no mês: <strong id="kpiObitosMes">0</strong></div>
           <div class="small mt-1 text-muted" id="kpiMortalidadeNota"></div>
@@ -109,7 +99,7 @@
 
     <div class="row g-3 mb-4">
       <div class="col-md-4">
-        <div class="card kpi-clean p-3 h-100" style="--accent:#0d6efd;">
+        <div class="card kpi-clean p-3 h-100" style="--accent:#0FA394;">
           <small>ADMISSÕES NO MÊS</small>
           <div class="d-flex justify-content-between mt-2"><span>Internas</span><strong id="admissoesInternasMes">0</strong></div>
           <div class="d-flex justify-content-between"><span>Externas</span><strong id="admissoesExternasMes">0</strong></div>
@@ -118,7 +108,7 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card kpi-clean p-3 h-100" style="--accent:#6c757d;">
+        <div class="card kpi-clean p-3 h-100" style="--accent:#94A3B8;">
           <small>ALTAS NO MÊS</small>
           <div class="d-flex justify-content-between mt-2"><span>Domiciliar (Capital)</span><strong id="altasDomiciliar">0</strong></div>
           <div class="d-flex justify-content-between"><span>Outro Município</span><strong id="altasMunicipio">0</strong></div>
@@ -127,7 +117,7 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card kpi-clean p-3 h-100" style="--accent:#ffc107;">
+        <div class="card kpi-clean p-3 h-100" style="--accent:#F5B73B;">
           <small>TRANSFERÊNCIAS NO MÊS</small>
           <div class="d-flex justify-content-between mt-2"><span>Internas</span><strong id="transfInternasMes">0</strong></div>
           <div class="d-flex justify-content-between"><span>Externas (Outro Hospital)</span><strong id="transfExternasMes">0</strong></div>
@@ -231,7 +221,7 @@
 
       <div class="row g-3 mb-4">
         <div class="col-md-3">
-          <div class="card kpi-clean p-3 h-100" style="--accent:#dc3545;">
+          <div class="card kpi-clean p-3 h-100" style="--accent:#F87171;">
             <small class="fw-semibold">PELE A PELE — 1º DIA DE VIDA</small>
             <h3 class="fw-bold mb-0" id="qPele1DiaPct">0%</h3>
             <div class="small mt-1 text-muted" id="qPele1DiaSub">0 de 0 RNs internados</div>
@@ -245,7 +235,7 @@
           </div>
         </div>
         <div class="col-md-3">
-          <div class="card kpi-clean p-3 h-100" style="--accent:#198754;">
+          <div class="card kpi-clean p-3 h-100" style="--accent:#34D399;">
             <small class="fw-semibold">EXTRAÇÃO BEIRA-LEITO</small>
             <h3 class="fw-bold mb-0" id="qExtracaoPct">0%</h3>
             <div class="small mt-1 text-muted" id="qExtracaoSub">0 de 0 registros</div>
@@ -488,7 +478,7 @@
           datasets: [{
             label: '% de Visitação',
             data: [data.visitacao.mae.percentual, data.visitacao.pai.percentual, data.visitacao.irmao.percentual, data.visitacao.avos.percentual],
-            backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#6f42c1']
+            backgroundColor: ['#0FA394', '#34D399', '#F5B73B', '#A78BFA']
           }]
         },
         options: { scales: { y: { beginAtZero: true, max: 100 } } }
@@ -510,7 +500,7 @@
             labels: Object.keys(etapas).length ? Object.keys(etapas) : ['Sem registros'],
             datasets: [{
               data: Object.keys(etapas).length ? Object.values(etapas) : [1],
-              backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6c757d']
+              backgroundColor: ['#0FA394', '#34D399', '#F5B73B', '#F87171', '#94A3B8']
             }]
           }
         });
@@ -604,8 +594,8 @@
           datasets: [{
             label: ehUEN ? 'RNs em Leito Extra CCO Neonatal' : 'Ocupação 24h',
             data: data.porDia.map(d => d.ocupacao),
-            borderColor: '#0d6efd',
-            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+            borderColor: '#0FA394',
+            backgroundColor: 'rgba(15, 163, 148, 0.14)',
             fill: true,
             tension: 0.3
           }]
@@ -619,7 +609,7 @@
           labels: Object.keys(data.estatisticas.procedencia),
           datasets: [{
             data: Object.values(data.estatisticas.procedencia),
-            backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6c757d', '#6f42c1', '#20c997']
+            backgroundColor: ['#0FA394', '#34D399', '#F5B73B', '#F87171', '#94A3B8', '#A78BFA', '#38BDF8']
           }]
         }
       });
@@ -632,7 +622,7 @@
           datasets: [{
             label: 'Pacientes',
             data: Object.values(data.estatisticas.faixasPermanencia),
-            backgroundColor: '#198754'
+            backgroundColor: '#34D399'
           }]
         }
       });
@@ -648,7 +638,7 @@
           datasets: [{
             label: 'Saídas no Mês',
             data: Object.values(data.estatisticas.girosPorLeito),
-            backgroundColor: '#ffc107'
+            backgroundColor: '#F5B73B'
           }]
         }
       });
@@ -750,7 +740,7 @@
     }
 
     function kpiMini(label, valor) {
-      return `<div class="col-md-3"><div class="card kpi-clean p-3 h-100" style="--accent:#0d6efd;"><small>${label}</small><h4 class="fw-bold mb-0">${valor}</h4></div></div>`;
+      return `<div class="col-md-3"><div class="card kpi-clean p-3 h-100" style="--accent:#0FA394;"><small>${label}</small><h4 class="fw-bold mb-0">${valor}</h4></div></div>`;
     }
 
     function imprimirRelatorio() {
@@ -765,7 +755,7 @@
         <style>
           body { padding: 24px; font-family: Arial, sans-serif; }
           .kpi-clean { border-radius: 10px; border: 1px solid #dee2e6; padding: .75rem; }
-          .kpi-clean small { color:#6c757d; font-weight:600; }
+          .kpi-clean small { color:#94A3B8; font-weight:600; }
           table { font-size: 13px; }
           @media print { .no-print { display:none; } }
         </style></head><body>

@@ -2,29 +2,24 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/png" href="/assets/img-e02cd94544.png">
   <title>Natus - Gestão Inteligente de Leitos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(135deg, #1a4d6e 0%, #3d7ea6 55%, #eeb3ae 130%);
-      min-height: 100vh; display: flex; align-items: center;
-    }
-    .login-card { max-width: 400px; margin: 0 auto; border-radius: 18px; overflow: hidden; }
-    .login-logo { width: 132px; height: 132px; object-fit: contain; display: block; margin: 0 auto; }
-    .login-footer-brand { letter-spacing: .04em; }
-  </style>
   <script src="/natus-rpc.js"></script>
+  <!--@head-->
 </head>
-<body>
-  <div class="container">
-    <div class="card login-card shadow-lg border-0 p-4">
-      <div class="text-center mb-2">
+<body class="nt-login">
+  <button type="button" class="nt-iconbtn nt-theme-float" data-natus-theme-toggle aria-label="Alternar tema"><i class="bi bi-moon-stars-fill"></i></button>
+  <main class="card login-card border-0">
+    <div class="card-body">
+      <div class="text-center mb-4">
         <img class="login-logo" src="/assets/img-692869aa73.png" alt="Natus - Gestão Inteligente de Leitos">
-        <p class="text-muted small mb-0 mt-1">Maternidade Ana Braga &middot; Acesse com seu usuário cadastrado</p>
+        <h1 class="h4 fw-bold mt-3 mb-1">Bem-vindo ao Natus</h1>
+        <p class="text-muted small mb-0">Maternidade Ana Braga &middot; Acesse com seu usuário cadastrado</p>
       </div>
-      <div id="alertaErro" class="alert alert-danger py-2 small d-none"></div>
+      <div id="alertaErro" class="alert alert-danger py-2 small d-none mt-3" role="alert"></div>
       <form id="formLogin">
         <div class="mb-3">
           <label class="form-label small fw-semibold">Nome</label>
@@ -34,13 +29,13 @@
           <label class="form-label small fw-semibold">Senha</label>
           <input type="password" class="form-control" id="loginSenha" required>
         </div>
-        <button type="submit" class="btn btn-primary w-100 fw-semibold" id="btnEntrar" style="background:#3d7ea6; border-color:#3d7ea6;">
+        <button type="submit" class="btn btn-primary btn-lg w-100 fw-semibold" id="btnEntrar">
           <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
         </button>
       </form>
-      <p class="text-center text-muted small mt-3 mb-0 login-footer-brand">Acesso restrito a usuários cadastrados pela equipe do SAME.</p>
+      <p class="text-center text-muted small mt-4 mb-0 login-footer-brand">Acesso restrito a usuários cadastrados pela equipe do SAME.</p>
     </div>
-  </div>
+  </main>
 
   <script>
     const appUrl = "<?!= appUrl ?>";

@@ -14,6 +14,12 @@ negócio (UEN/vaga zero, binômio ALCON, censo às 24h, mortalidade, Método Can
 
 `public/natus-rpc.js` recria `google.script.run` sobre `fetch`, por isso as telas quase não foram alteradas.
 
+## Interface (design system)
+- **Tema claro/escuro** (botão no trilho lateral; segue o sistema operacional até o usuário escolher; preferência salva no navegador).
+- Fundo `#F4F5F7`, cards brancos flutuantes (`border-radius: 20px`, borda sutil, sombra leve), tipografia **Plus Jakarta Sans**.
+- Trilho lateral compacto com ícones (vira barra inferior no celular), KPIs, gráficos de tendência/distribuição (Chart.js) e cards de leitos por situação.
+- Tudo em `public/natus-ui.css` (tokens `--primary`, `--card`, `--bg`…), `public/natus-ui.js` (tema, gráficos, trilho) e `lib/shell.js` (trilho por perfil). Para trocar a paleta, edite só os tokens no início do CSS.
+
 ## Implantação (≈10 min)
 1. **Banco**: crie um PostgreSQL gratuito (Neon, Supabase ou Vercel Postgres, região São Paulo/`gru1` se disponível) e copie a `DATABASE_URL` (versão *pooled*).
 2. **GitHub**: `git init && git add . && git commit -m "Natus" && git remote add origin <repo> && git push -u origin main`.
