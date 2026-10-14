@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Natus - NIR</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <script src="/natus-rpc.js"></script>
+  <!--@head-->
+</head>
+<body class="nt-body">
+<div class="app-shell">
+  <!--@rail-->
+
+  <section class="content">
+    <header class="nt-topbar">
+      <div>
+        <div class="nt-crumb"><span>Natus</span><i class="bi bi-chevron-right"></i><span>Regulação</span></div>
+        <h1 class="nt-title">NIR · Núcleo Interno de Regulação</h1>
+      </div>
+      <div class="nt-actions">
+        <span class="nt-chip"><span class="nt-live"></span>Atualização operacional</span>
+        <button class="btn btn-light btn-sm" onclick="carregarNIR()" title="Atualizar"><i class="bi bi-arrow-clockwise me-1"></i>Atualizar</button>
+        <!--@useractions-->
+      </div>
+    </header>
+
+    <main class="main nt-page">
+      <div class="hero">
+        <div class="position-relative" style="z-index:1">
+          <h2>Panorama dos Setores</h2>
+          <p>Acompanhe em tempo real a ocupação, disponibilidade e situação dos leitos da maternidade.</p>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div><h3 class="section-title">Setores assistenciais</h3><div class="small text-muted">Clique em um setor para acessar seu painel operacional.</div></div>
+        <span class="badge rounded-pill text-bg-light border" id="contadorSetores">— setores</span>
+      </div>
+
+      <div id="gridSetores" class="row g-3">
+        <div class="col-12"><div class="empty"><div class="spinner-border spinner-border-sm text-info"></div><div class="mt-2">Carregando ocupação dos setores...</div></div></div>
+      </div>
+    </main>
+  </section>
+</div>
+
+<!-- Novo Setor -->
+<div class="modal fade" id="modalNovoSetor" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header natus"><h5 class="modal-title fw-bold"><i class="bi bi-building-add me-2"></i>Cadastrar Novo Setor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <form id="formNovoSetor"><div class="modal-body">
+        <div class="mb-3"><label class="form-label fw-semibold">Nome do Setor</label><input type="text" class="form-control" id="setorNome" required placeholder="Ex.: ALCON 1, UCINCA, UTIN 3"></div>
+        <div class="mb-3"><label class="form-label fw-semibold">Tipo do Setor</label>
+          <select class="form-select" id="setorTipo"><option value="UTI">UTI Neonato / Pediátrica</option><option value="UCINCO">UCINCO</option><option value="UCINCA">UCINCA (Canguru)</option><option value="Alojamento Conjunto">Alojamento Conjunto (ALCON)</option><option value="Obstetrícia">Centro Obstétrico / PPP</option></select>
+        </div>
+        <div><label class="form-label fw-semibold">Quantidade Inicial de Leitos Ativos</label><input type="number" class="form-control" id="setorLeitos" min="1" max="100" value="10" required></div>
+      </div><div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-natus fw-semibold" type="submit">Criar Setor</button></div></form>
+    </div>
+  </div>
+</div>
+
+<!-- Usuários -->
+<div class="modal fade" id="modalUsuarios" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header natus"><h5 class="modal-title fw-bold"><i class="bi bi-people-fill me-2"></i>Usuários e Acessos</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="alert alert-info small">Cadastre o perfil e o setor ao qual o usuário terá acesso.</div>
+        <form id="formUsuario" class="row g-2 mb-4">
+          <div class="col-md-3"><label class="form-label">Nome</label><input class="form-control" id="usuarioNome" required></div>
+          <div class="col-md-3"><label class="form-label">Perfil</label><select class="form-select" id="usuarioPerfil" required><option value="Setor">Setor</option><option value="NIR">NIR</option><option value="SAME">SAME</option><option value="NIR/SAME">NIR/SAME</option><option value="Gestão">Gestão</option></select></div>
+          <div class="col-md-3"><label class="form-label">Setor</label><select class="form-select" id="usuarioSetor" required></select></div>
+          <div class="col-md-2"><label class="form-label">Senha</label><input type="password" class="form-control" id="usuarioSenha" required></div>
+          <div class="col-md-1 d-flex align-items-end"><button class="btn btn-success w-100" type="submit"><i class="bi bi-check-lg"></i></button></div>
+        </form>
+        <div class="table-responsive"><table class="table table-sm table-hover align-middle"><thead class="table-light"><tr><th>Nome</th><th>Perfil</th><th>Setor</th><th class="text-end">Ação</th></tr></thead><tbody id="tabelaUsuarios"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const token="<?!= token ?>", appUrl="<?!= appUrl ?>";
+document.addEventListener('DOMContentLoaded',carregarNIR);
+
+function rotuloSetor(nome){ return String(nome||'').trim().toUpperCase()==='UEN' ? 'Leito Extra CCO Neonatal' : nome; }
+function abrirNovoSetor(){ bootstrap.Modal.getOrCreateInstance(document.getElementById('modalNovoSetor')).show(); }
+function abrirUsuarios(){ carregarUsuarios(); bootstrap.Modal.getOrCreateInstance(document.getElementById('modalUsuarios')).show(); }
+
+function carregarNIR(){
+  google.script.run.withSuccessHandler(renderizarSetores).withFailureHandler(err=>{
+    document.getElementById('gridSetores').innerHTML='<div class="col-12"><div class="alert alert-danger">Erro ao carregar os setores: '+(err&&err.message?err.message:err)+'</div></div>';
+  }).obterDadosNIR();
+}
+function renderizarSetores(setores){
+  const grid=document.getElementById('gridSetores'); grid.innerHTML='';
+  document.getElementById('contadorSetores').textContent=`${setores.length} setor${setores.length===1?'':'es'}`;
+  if(!setores.length){grid.innerHTML='<div class="col-12"><div class="empty"><i class="bi bi-hospital fs-1"></i><div class="mt-2">Nenhum setor cadastrado.</div></div></div>';return;}
+  setores.forEach(s=>{
+    const taxa=Number(s.taxa)||0, nomeInterno=s.setor, nomeExibicao=rotuloSetor(nomeInterno);
+    const ocupado=taxa>=100, atencao=taxa>=90&&!ocupado;
+    const statusClass=ocupado?'lotado':atencao?'atencao':'ok';
+    const fill=ocupado?'#dc3545':atencao?'#f59f45':'#10aeb8';
+    const dot=ocupado?'#dc3545':atencao?'#f59f45':'#19a974';
+    grid.innerHTML+=`
+      <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="setor-card" onclick="abrirSetor('${String(nomeInterno).replace(/'/g,"\\'")}')">
+          <div class="setor-top"></div><div class="setor-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex align-items-center gap-2"><div class="setor-icon"><i class="bi bi-hospital"></i></div>
+                <div><div class="fw-bold">${nomeExibicao}</div><div class="small text-muted">${s.tipo||'Setor assistencial'}</div></div>
+              </div>
+              <span class="small fw-bold"><span class="status-dot" style="background:${dot}"></span>${ocupado?'Lotado':atencao?'Atenção':'Disponível'}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-end mb-2"><div class="occupancy">${s.ocupados}<small> / ${s.total}</small></div><div class="rate">${taxa}%</div></div>
+            <div class="barra-ocup mb-3"><div class="barra-ocup-fill" style="width:${Math.min(taxa,100)}%;background:${fill}"></div></div>
+            <div class="d-flex justify-content-between small text-muted"><span><i class="bi bi-check-circle me-1"></i>${s.livres} livre(s)</span><span>Ver setor <i class="bi bi-arrow-right"></i></span></div>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+function abrirSetor(nomeSetor){window.top.location.href=`${appUrl}?view=painel&token=${token}&setor=${encodeURIComponent(nomeSetor)}`;}
+function abrirHistorico(){window.top.location.href=`${appUrl}?view=historico&token=${token}`;}
+function abrirDashboardGeral(){window.top.location.href=`${appUrl}?view=dashboardgeral&token=${token}`;}
+
+function carregarUsuarios(){
+  google.script.run.withSuccessHandler(renderizarUsuarios).withFailureHandler(err=>alert(err.message)).obterUsuariosAdministrativos(token);
+  google.script.run.withSuccessHandler(setores=>{
+    document.getElementById('usuarioSetor').innerHTML=['NIR','SAME','NIR/SAME','Gestão'].map(s=>`<option value="${s}">${s}</option>`).join('')+
+      setores.map(s=>`<option value="${s}">${rotuloSetor(s)}</option>`).join('');
+    const perfil=document.getElementById('usuarioPerfil').value;
+    document.getElementById('usuarioSetor').value=perfil!=='Setor'?perfil:(setores[0]||'');
+  }).withFailureHandler(err=>alert(err.message)).obterSetoresParaUsuario(token);
+}
+function renderizarUsuarios(lista){document.getElementById('tabelaUsuarios').innerHTML=lista.map(u=>`
+<tr><td>${u.nome}</td><td><span class="badge ${u.perfil==='Setor'?'bg-secondary':'bg-primary'}">${u.perfil}</span></td><td>${rotuloSetor(u.setor)}</td>
+<td class="text-end"><button class="btn btn-sm btn-outline-danger" onclick="excluirUsuario('${String(u.nome).replace(/'/g,"\\'")}')"><i class="bi bi-trash"></i></button></td></tr>`).join('');}
+document.getElementById('usuarioPerfil').addEventListener('change',()=>{const p=document.getElementById('usuarioPerfil').value;if(p!=='Setor')document.getElementById('usuarioSetor').value=p;});
+document.getElementById('formUsuario').addEventListener('submit',e=>{
+  e.preventDefault();const btn=e.submitter;btn.disabled=true;
+  const dados={nome:document.getElementById('usuarioNome').value.trim(),perfil:document.getElementById('usuarioPerfil').value,setor:document.getElementById('usuarioSetor').value,senha:document.getElementById('usuarioSenha').value};
+  google.script.run.withSuccessHandler(()=>{e.target.reset();btn.disabled=false;carregarUsuarios();}).withFailureHandler(err=>{btn.disabled=false;alert(err.message);}).salvarUsuario(token,dados);
+});
+function excluirUsuario(nome){if(!confirm(`Excluir o usuário "${nome}"?`))return;google.script.run.withSuccessHandler(carregarUsuarios).withFailureHandler(err=>alert(err.message)).excluirUsuario(token,nome);}
+function sair(){google.script.run.withSuccessHandler(()=>window.top.location.href=appUrl).encerrarSessao(token);}
+document.getElementById('formNovoSetor').addEventListener('submit',function(e){
+  e.preventDefault();const payload={nome:document.getElementById('setorNome').value,tipo:document.getElementById('setorTipo').value,leitosAtivos:document.getElementById('setorLeitos').value};
+  google.script.run.withSuccessHandler(()=>{bootstrap.Modal.getInstance(document.getElementById('modalNovoSetor')).hide();document.getElementById('formNovoSetor').reset();carregarNIR();}).withFailureHandler(err=>alert(err.message)).criarSetor(payload);
+});
+</script>
+</body>
+</html>
