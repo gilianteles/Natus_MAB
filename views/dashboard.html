@@ -282,7 +282,7 @@
 
     function alternarAba(aba) {
       abaAtual = aba;
-      document.getElementById('tituloDashboard').textContent = aba === 'qualidade' ? 'Dashboard de Qualidade' : 'Visão Geral';
+      document.getElementById('tituloDashboard').textContent = aba === 'qualidade' ? 'de Qualidade' : 'Visão Geral';
       document.getElementById('abaBtnVisaoGeral').classList.toggle('active', aba === 'visaoGeral');
       document.getElementById('abaBtnQualidade').classList.toggle('active', aba === 'qualidade');
       document.getElementById('painelVisaoGeral').classList.toggle('d-none', aba !== 'visaoGeral');

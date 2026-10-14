@@ -288,19 +288,24 @@ body.nt-body .main { padding: 0 28px 40px; max-width: 1560px; margin-inline: aut
 
 /* Qualidade */
 .quality-hero { background: radial-gradient(120% 160% at 100% 0%, var(--deep-2), var(--deep) 65%) !important; border: 0 !important; border-radius: var(--radius) !important; padding: 22px !important; color: #fff; }
-.quality-hero * { color: inherit; }
-.quality-hero .hero-title { font-weight: 800; font-size: 1.2rem; color: #fff !important; }
-.ppe-grid { gap: 14px !important; }
-.ppe-card { background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: var(--radius) !important; box-shadow: var(--shadow); }
-.ppe-card .ppe-icon { color: var(--primary) !important; } .ppe-card .ppe-label { color: var(--text) !important; font-weight: 700; }
-.ppe-card .ppe-value { color: var(--text) !important; font-weight: 800; letter-spacing: -.03em; } .ppe-card .ppe-sub { color: var(--muted) !important; }
-.progress-natus { background: var(--card-2) !important; height: 8px !important; }
-.progress-natus > span { background: linear-gradient(90deg, var(--primary), #5EEAD4) !important; }
-.quality-info { background: var(--info-soft) !important; border: 0 !important; color: var(--text-2) !important; border-radius: var(--radius-md) !important; }
-.quality-list-title { color: var(--text) !important; font-weight: 800; }
-.quality-row { background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: var(--radius-md) !important; box-shadow: var(--shadow-sm) !important; }
-.quality-row .q-icon { background: var(--primary-soft) !important; color: var(--primary) !important; }
-.quality-row .q-name { color: var(--text) !important; } .quality-row .q-value { color: var(--text) !important; } .quality-row .q-arrow { color: var(--muted) !important; }
+.quality-hero .hero-title { font-weight: 800; font-size: 1.15rem; color: #fff !important; display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.quality-hero .hero-title i { color: #7CF0DE; }
+.ppe-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 16px; }
+.ppe-card { background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: var(--radius-md) !important; padding: 20px; text-align: center; box-shadow: var(--shadow-sm); }
+.ppe-card .ppe-icon { font-size: 1.8rem; line-height: 1; color: var(--primary) !important; }
+.ppe-card .ppe-label { color: var(--text) !important; font-weight: 700; margin-top: 6px; }
+.ppe-card .ppe-value { font-size: 2.05rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin-top: 8px; color: var(--text) !important; }
+.ppe-card .ppe-sub { font-size: .78rem; color: var(--muted) !important; margin-top: 2px; }
+.progress-natus { height: 10px !important; background: var(--card-2) !important; border-radius: 99px; overflow: hidden; margin-top: 12px; }
+.progress-natus > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--primary), #5EEAD4) !important; transition: width .6s cubic-bezier(.2, .8, .2, 1); }
+.quality-info { background: var(--info-soft) !important; border: 0 !important; color: var(--text-2) !important; border-radius: var(--radius-md) !important; font-size: .8rem; padding: 11px 13px; margin-top: 14px; }
+.quality-list-title { color: var(--text) !important; font-weight: 800; font-size: 1.15rem; margin: 24px 0 12px; }
+.quality-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 16px; margin-bottom: 9px;
+  background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: var(--radius-md) !important; box-shadow: var(--shadow-sm) !important; }
+.quality-row .q-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex: none; background: var(--primary-soft) !important; color: var(--primary) !important; }
+.quality-row .q-name { color: var(--text) !important; font-weight: 600; }
+.quality-row .q-value { color: var(--text) !important; font-weight: 800; }
+.quality-row .q-arrow { color: var(--muted) !important; font-size: 1.1rem; }
 .loading-overlay { background: color-mix(in srgb, var(--bg) 88%, transparent) !important; backdrop-filter: blur(6px); }
 .text-natus { color: var(--primary) !important; }
 

@@ -38,7 +38,7 @@ module.exports = async function handler(req, res) {
     const view = String(q.view || ''), token = String(q.token || '');
     const sessao = token ? await validarSessao(token) : null;
     const appUrl = '/';
-    if (!sessao) return res.status(200).send(render('login', { appUrl }, TITULOS.login));
+    if (!sessao) return res.status(200).send(render('login', { appUrl }));
 
     const base = { token, appUrl, nomeUsuario: sessao.nome, perfilUsuario: sessao.perfil, setorUsuario: sessao.setor || '' };
     const adm = ehPerfilAdministrativo(sessao.perfil), nir = ehPerfilNIR(sessao.perfil);
